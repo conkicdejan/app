@@ -42,6 +42,10 @@ function AddCar() {
     document.getElementById('form').reset();
   };
 
+  const handlePreview = () => {
+    alert(JSON.stringify(newCar))
+    }
+    
   return (
     <div className="container">
       <form onSubmit={handleAddCar} id="form">
@@ -127,6 +131,7 @@ function AddCar() {
 
         <button>Add car</button>
       </form>
+      <button onClick={handlePreview}>preview</button>
       <button onClick={handleReset}>reset form</button>
     </div>
   );
