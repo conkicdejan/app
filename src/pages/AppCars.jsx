@@ -24,17 +24,19 @@ function AppCars() {
   };
 
   const handleDelete = (id) => {
-    const deleteCar = async () => {
-      try {
-        const response = await CarService.delete(id);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
+    if (window.confirm('Are you sure you want to delete this car form the database?')) {
+      const deleteCar = async () => {
+        try {
+          const response = await CarService.delete(id);
+          console.log(response);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      if (deleteCar()) {
+        const newCars = cars.filter(({ id: carId }) => id !== carId);
+        setCars(newCars);
       }
-    };
-    if (deleteCar()) {
-      const newCars = cars.filter(({ id: carId }) => id !== carId);
-      setCars(newCars);
     }
   };
 
