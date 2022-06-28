@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Redirect, useHistory, useParams } from 'react-router-dom';
 import CarService from '../services/CarService';
 
 function AddCar() {
@@ -9,7 +9,7 @@ function AddCar() {
     year: '',
     maxSpeed: '',
     isAutomatic: false,
-    engine: false,
+    engine: '',
     numberOfDoors: '',
   };
 
@@ -17,41 +17,73 @@ function AddCar() {
 
   const history = useHistory();
 
+  const carId = useParams();
+
   const engineTypes = ['petrol', 'diesel', 'hybrid', 'electric'];
 
   const yearsRange = (from, to) => Array.from({ length: to - from + 1 }, (v, i) => to - i);
 
   const handleAddCar = (e) => {
     e.preventDefault();
-    const addCar = async () => {
-      try {
-        const response = await CarService.add(newCar);
-        if (response) {
-          history.push('/cars');
+    if (!carId) {
+      const addCar = async () => {
+        try {
+          const response = await CarService.add(newCar);
+          if (response) {
+            history.push('/cars');
+          }
+          console.log(response);
+        } catch (error) {
+          console.log(error);
         }
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    addCar();
+      };
+      addCar();
+    } else {
+      const updateCar = async () => {
+        try {
+          const response = await CarService.update(carId.id, newCar);
+          if (response) {
+            history.push('/cars');
+          }
+          console.log(response);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      updateCar();
+    }
   };
 
   const handleReset = () => {
     setNewCar(initailFormValues);
-    document.getElementById('form').reset();
   };
 
   const handlePreview = () => {
     alert(JSON.stringify(newCar));
   };
 
+  useEffect(() => {
+    if (carId.id) {
+      const getData = async () => {
+        try {
+          const cars = await CarService.getById(carId.id);
+          setNewCar(cars);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getData();
+    } else {
+      handleReset();
+    }
+  }, [carId]);
+
   return (
     <div className="container">
       <form onSubmit={handleAddCar} id="form">
         <input
           required
-          minlength="2"
+          minLength="2"
           type="text"
           name="brand"
           value={newCar.brand}
@@ -62,7 +94,7 @@ function AddCar() {
 
         <input
           required
-          minlength="2"
+          minLength="2"
           type="text"
           name="model"
           value={newCar.model}
@@ -104,7 +136,7 @@ function AddCar() {
             type="checkbox"
             name="isAutomatic"
             id="isAutomatic"
-            value={newCar.isAutomatic}
+            checked={newCar.isAutomatic}
             onChange={(e) => setNewCar({ ...newCar, [e.target.name]: e.target.checked })}
           />
           <label htmlFor="isAutomatic">is automatic</label>
@@ -118,6 +150,7 @@ function AddCar() {
               type="radio"
               id={type}
               name="engine"
+              checked={type === newCar.engine}
               value={type}
               onChange={(e) => setNewCar({ ...newCar, [e.target.name]: e.target.value })}
             />
@@ -136,7 +169,7 @@ function AddCar() {
         />
         <br />
 
-        <button>Add car</button>
+        <button>{carId.id ? 'Update car' : 'Add car'}</button>
       </form>
       <button onClick={handlePreview}>preview</button>
       <button onClick={handleReset}>reset form</button>
