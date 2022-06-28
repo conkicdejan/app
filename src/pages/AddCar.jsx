@@ -3,15 +3,17 @@ import { Redirect, useHistory } from 'react-router-dom';
 import CarService from '../services/CarService';
 
 function AddCar() {
-  const [newCar, setNewCar] = useState({
+  const initailFormValues = {
     brand: '',
     model: '',
     year: '',
     maxSpeed: '',
-    isAutomatic: '',
-    engine: '',
+    isAutomatic: false,
+    engine: false,
     numberOfDoors: '',
-  });
+  };
+
+  const [newCar, setNewCar] = useState(initailFormValues);
 
   const history = useHistory();
 
@@ -35,9 +37,14 @@ function AddCar() {
     addCar();
   };
 
+  const handleReset = () => {
+    setNewCar(initailFormValues);
+    document.getElementById('form').reset();
+  };
+
   return (
     <div className="container">
-      <form onSubmit={handleAddCar}>
+      <form onSubmit={handleAddCar} id="form">
         <input
           type="text"
           name="brand"
@@ -75,6 +82,8 @@ function AddCar() {
         <input
           type="number"
           name="maxSpeed"
+          min="1"
+          max="400"
           value={newCar.maxSpeed}
           placeholder="max speed"
           onChange={(e) => setNewCar({ ...newCar, [e.target.name]: e.target.value })}
@@ -118,6 +127,7 @@ function AddCar() {
 
         <button>Add car</button>
       </form>
+      <button onClick={handleReset}>reset form</button>
     </div>
   );
 }
