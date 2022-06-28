@@ -23,6 +23,21 @@ function AppCars() {
     history.push(`/edit/${id}`);
   };
 
+  const handleDelete = (id) => {
+    const deleteCar = async () => {
+      try {
+        const response = await CarService.delete(id);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (deleteCar()) {
+      const newCars = cars.filter(({ id: carId }) => id !== carId);
+      setCars(newCars);
+    }
+  };
+
   return (
     <div>
       {cars.length > 0 ? (
@@ -51,6 +66,7 @@ function AppCars() {
                 <td>{car.numberOfDoors}</td>
                 <td>
                   <button onClick={() => handleEdit(car.id)}>edit</button>
+                  <button onClick={() => handleDelete(car.id)}>delete</button>
                 </td>
               </tr>
             ))}

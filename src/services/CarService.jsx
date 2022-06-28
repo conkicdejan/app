@@ -12,7 +12,7 @@ class CarService {
       const { data } = await this.HTTPClient.get('api/cars');
       return data;
     } catch (error) {
-      return error;
+      return null;
     }
   }
 
@@ -21,7 +21,7 @@ class CarService {
       const { data } = await this.HTTPClient.get(`api/cars/${id}`);
       return data;
     } catch (error) {
-      return error;
+      return null;
     }
   }
 
@@ -30,7 +30,7 @@ class CarService {
       const response = await this.HTTPClient.post('api/cars', data);
       return response;
     } catch (error) {
-      return error;
+      return null;
     }
   }
 
@@ -39,8 +39,18 @@ class CarService {
       const response = await this.HTTPClient.put(`api/cars/${id}`, data);
       return response;
     } catch (error) {
-      return error;
+      return null;
     }
   }
+
+  async delete(id) {
+    try {
+      const response = await this.HTTPClient.delete(`api/cars/${id}`);
+      return response;
+    } catch (error) {
+      return null;
+    }
+  }
+  
 }
 export default new CarService();

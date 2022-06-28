@@ -25,7 +25,7 @@ function AddCar() {
 
   const handleAddCar = (e) => {
     e.preventDefault();
-    if (!carId) {
+    if (!carId.id) {
       const addCar = async () => {
         try {
           const response = await CarService.add(newCar);
