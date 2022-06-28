@@ -9,7 +9,6 @@ function AppCars() {
       try {
         const cars = await CarService.getAll();
         setCars(cars);
-        console.log(cars);
       } catch (error) {
         console.log(error);
       }
@@ -19,7 +18,7 @@ function AppCars() {
 
   return (
     <div>
-      {cars ? (
+      {cars.length > 0 ? (
         <table>
           <thead>
             <tr>
@@ -35,13 +34,13 @@ function AppCars() {
           <tbody>
             {cars.map((car) => (
               <tr key={car.id}>
-                <td>car.brand</td>
-                <td>car.model</td>
-                <td>car.year</td>
-                <td>car.maxSpeed</td>
-                <td>car.isAutomatic</td>
-                <td>car.engine</td>
-                <td>car.numberOfDoors</td>
+                <td>{car.brand}</td>
+                <td>{car.model}</td>
+                <td>{car.year}</td>
+                <td>{car.maxSpeed}</td>
+                <td>{car.isAutomatic ? 'yes' : 'no'}</td>
+                <td>{car.engine}</td>
+                <td>{car.numberOfDoors}</td>
               </tr>
             ))}
           </tbody>

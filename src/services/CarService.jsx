@@ -9,12 +9,20 @@ class CarService {
 
   async getAll() {
     try {
-      const { data } = this.HTTPClient.get('api/cars');
+      const { data } = await this.HTTPClient.get('api/cars');
       return data;
     } catch (error) {
       return error;
     }
   }
-}
 
+  async add(data) {
+    try {
+      const response = await this.HTTPClient.post('api/cars', data);
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+}
 export default new CarService();
