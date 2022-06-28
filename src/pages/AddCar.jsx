@@ -43,13 +43,15 @@ function AddCar() {
   };
 
   const handlePreview = () => {
-    alert(JSON.stringify(newCar))
-    }
-    
+    alert(JSON.stringify(newCar));
+  };
+
   return (
     <div className="container">
       <form onSubmit={handleAddCar} id="form">
         <input
+          required
+          minlength="2"
           type="text"
           name="brand"
           value={newCar.brand}
@@ -59,6 +61,8 @@ function AddCar() {
         <br />
 
         <input
+          required
+          minlength="2"
           type="text"
           name="model"
           value={newCar.model}
@@ -69,6 +73,7 @@ function AddCar() {
 
         <div>
           <select
+            required
             name="year"
             value={newCar.year}
             onChange={(e) => setNewCar({ ...newCar, [e.target.name]: e.target.value })}
@@ -109,6 +114,7 @@ function AddCar() {
         {engineTypes.map((type, index) => (
           <div key={index}>
             <input
+              required
               type="radio"
               id={type}
               name="engine"
@@ -121,6 +127,7 @@ function AddCar() {
         ))}
 
         <input
+          required
           type="number"
           name="numberOfDoors"
           value={newCar.numberOfDoors}
