@@ -1,82 +1,104 @@
 import React, { useEffect, useState } from 'react';
-import CarService from '../services/CarService';
 import { Link, Redirect, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAll } from '../store/cars/slice';
+import { selectCars } from '../store/cars/selectors';
+import CarRow from '../component/CarRow';
+import CarSearch from '../component/CarSearch';
 
 function AppCars() {
-  const [cars, setCars] = useState([]);
+  const dispatch = useDispatch();
+  const cars = useSelector(selectCars);
+  const [pages, setPages] = useState({
+    currentPage: 1,
+    lastPage: '',
+  });
+  const [perPages, setPerPages] = useState('');
 
   const history = useHistory();
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const cars = await CarService.getAll();
-        setCars(cars);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getData();
+    dispatch(getAll());
   }, []);
 
   const handleEdit = (id) => {
     history.push(`/edit/${id}`);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this car form the database?')) {
-      const deleteCar = async () => {
-        try {
-          const response = await CarService.delete(id);
-          console.log(response);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      if (deleteCar()) {
-        const newCars = cars.filter(({ id: carId }) => id !== carId);
-        setCars(newCars);
-      }
-    }
+  // const handleDelete = (id) => {
+  //   if (window.confirm('Are you sure you want to delete this car form the database?')) {
+  //     const deleteCar = async () => {
+  //       try {
+  //         const response = await CarService.delete(id);
+  //         console.log(response);
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     };
+  //     if (deleteCar()) {
+  //       const newCars = cars.filter(({ id: carId }) => id !== carId);
+  //       setCars(newCars);
+  //     }
+  //   }
+  // };
+
+  const handlePageChange = (page) => {
+    const newPages = { ...pages };
+    newPages.currentPage = page;
+    setPages(newPages);
   };
+
+  const handleChangePerPage = (value) => {
+    setPerPages(value);
+  };
+
+  const range = Array.from({ length: pages.lastPage }, (_, i) => 1 + i);
+  console.log(range);
+
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const cars = await CarService.getAll(1, perPages, search);
+  //       setCars(cars.data);
+  //       pages.lastPage = cars.last_page;
+  //       pages.currentPage = 1;
+  //       setPages(pages);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getData();
+  // }, [search]);
 
   return (
     <div>
-      {cars.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Brand</th>
-              <th>Model</th>
-              <th>Year</th>
-              <th>Max speed</th>
-              <th>Automatic</th>
-              <th>Engine</th>
-              <th>Number of doors</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cars.map((car) => (
-              <tr key={car.id}>
-                <td>{car.brand}</td>
-                <td>{car.model}</td>
-                <td>{car.year}</td>
-                <td>{car.maxSpeed}</td>
-                <td>{car.isAutomatic ? 'yes' : 'no'}</td>
-                <td>{car.engine}</td>
-                <td>{car.numberOfDoors}</td>
-                <td>
-                  <button onClick={() => handleEdit(car.id)}>edit</button>
-                  <button onClick={() => handleDelete(car.id)}>delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        'Cars not found'
-      )}
+      <div>
+        <CarSearch />
+        <input
+          min="1"
+          type="number"
+          onChange={(e) => handleChangePerPage(e.target.value)}
+        />
+
+        <p>last:{pages.lastPage}</p>
+        <p>current:{pages.currentPage}</p>
+        {range.map((page) => (
+          <span
+            className="buttonPage"
+            key={page}
+            onClick={() => handlePageChange(page)}
+          >
+            {page}
+          </span>
+        ))}
+      </div>
+      {cars
+        ? cars.map((car) => (
+            <ul key={car.id}>
+              <CarRow key={car.id} car={car} />
+            </ul>
+          ))
+        : 'Cars not found'}
     </div>
   );
 }

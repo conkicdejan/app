@@ -2,6 +2,8 @@ import './App.css';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import AppCars from './pages/AppCars';
 import AddCar from './pages/AddCar';
+import Login from './pages/Login';
+import Logout from './pages/Logout';
 
 function App() {
   return (
@@ -15,17 +17,29 @@ function App() {
             <li>
               <Link to="/add">Add</Link>
             </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/logout">Logout</Link>
+            </li>
           </ul>
         </nav>
         <Switch>
-          <Route path="/cars">
+          <Route exact path="/cars">
             <AppCars />
           </Route>
-          <Route path="/add">
+          <Route exact path="/add">
             <AddCar />
           </Route>
-          <Route path="/edit/:id">
+          <Route exact path="/edit/:id">
             <AddCar />
+          </Route>
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/logout">
+            <Logout />
           </Route>
         </Switch>
       </Router>

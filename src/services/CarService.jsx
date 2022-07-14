@@ -1,56 +1,33 @@
-import axios from 'axios';
+import HttpService from './HttpService';
 
-class CarService {
-  constructor() {
-    this.HTTPClient = axios.create({
-      baseURL: 'http://localhost:3000',
-    });
-  }
 
-  async getAll() {
-    try {
-      const { data } = await this.HTTPClient.get('api/cars');
+class CarService extends HttpService {
+
+  getAll = async(page = 1, perPage = 3, search = '') => {
+      const { data } = await this.client.get(
+        `cars?page=${page}&per_page=${perPage}&brand=${search}`
+        );
       return data;
-    } catch (error) {
-      return null;
-    }
   }
 
-  async getById(id) {
-    try {
-      const { data } = await this.HTTPClient.get(`api/cars/${id}`);
+  getById = async(id) => {
+      const { data } = await this.client.get(`cars/${id}`);
       return data;
-    } catch (error) {
-      return null;
-    }
   }
 
-  async add(data) {
-    try {
-      const response = await this.HTTPClient.post('api/cars', data);
+  add = async (data) => {
+      const response = await this.client.post('cars', data);
       return response;
-    } catch (error) {
-      return null;
-    }
   }
 
-  async update(id, data) {
-    try {
-      const response = await this.HTTPClient.put(`api/cars/${id}`, data);
+  update = async (id, data) => {
+      const response = await this.client.put(`cars/${id}`, data);
       return response;
-    } catch (error) {
-      return null;
-    }
   }
 
-  async delete(id) {
-    try {
-      const response = await this.HTTPClient.delete(`api/cars/${id}`);
+  delete = async (id) => {
+      const response = await this.client.delete(`cars/${id}`);
       return response;
-    } catch (error) {
-      return null;
-    }
   }
-  
 }
 export default new CarService();
