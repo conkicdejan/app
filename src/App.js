@@ -9,18 +9,18 @@ function App() {
   return (
     <div>
       <Router>
-        <nav>
-          <ul>
-            <li>
+        <nav className="navbar sticky-top navbar-expand navbar-light bg-light">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-link">
               <Link to="/cars">Cars</Link>
             </li>
-            <li>
+            <li className="nav-link">
               <Link to="/add">Add</Link>
             </li>
-            <li>
+            <li className="nav-link">
               <Link to="/login">Login</Link>
             </li>
-            <li>
+            <li className="nav-link">
               <Link to="/logout">Logout</Link>
             </li>
           </ul>

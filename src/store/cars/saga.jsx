@@ -3,8 +3,10 @@ import CarService from '../../services/CarService';
 import { getAll, setCars } from './slice';
 
 function* getAllHandler(action) {
+  yield put(setCars(null));
   try {
-    const  {data}  = yield call(CarService.getAll);
+    console.log('search payload', action.payload);
+    const { data } = yield call(CarService.getAll, action.payload ? action.payload : '');
     // console.log(data)
     yield put(setCars(data));
   } catch (error) {

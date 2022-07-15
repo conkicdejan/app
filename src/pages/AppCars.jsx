@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAll } from '../store/cars/slice';
-import { selectCars } from '../store/cars/selectors';
+import { getAll, selectAll, deselectAll } from '../store/cars/slice';
+import { selectCars, selectSelectedCars } from '../store/cars/selectors';
 import CarRow from '../component/CarRow';
 import CarSearch from '../component/CarSearch';
 
 function AppCars() {
   const dispatch = useDispatch();
   const cars = useSelector(selectCars);
+  const selectedCars = useSelector(selectSelectedCars);
   const [pages, setPages] = useState({
     currentPage: 1,
     lastPage: '',
   });
+  const [sort, setSort] = useState({sort: 'brand-asc'});
   const [perPages, setPerPages] = useState('');
 
   const history = useHistory();
 
   useEffect(() => {
-    dispatch(getAll());
-  }, []);
+    dispatch(getAll(sort));
+  }, [sort]);
 
   const handleEdit = (id) => {
     history.push(`/edit/${id}`);
@@ -53,7 +55,7 @@ function AppCars() {
   };
 
   const range = Array.from({ length: pages.lastPage }, (_, i) => 1 + i);
-  console.log(range);
+  // console.log(range);
 
   // useEffect(() => {
   //   const getData = async () => {
@@ -69,17 +71,38 @@ function AppCars() {
   //   };
   //   getData();
   // }, [search]);
+  const handleSelectAll = () => {
+    dispatch(selectAll());
+  };
+  const handleDeselectAll = () => {
+    dispatch(deselectAll());
+  };
 
   return (
-    <div>
+    <div className="container">
+      <div className="row align-items-start">
+        <div className="col-6">Total selected:{selectedCars.length}</div>
+        <div className="col-2">
+          <button onClick={handleSelectAll} className=" btn btn-primary my-1">
+            select all
+          </button>
+        </div>
+        <div className="col-2">
+          <button onClick={handleDeselectAll} className=" btn btn-primary my-1">
+            deselect all
+          </button>
+        </div>
+        <div className="col-2">
+          <select onChange={(e) => setSort({sort: e.target.value})} value={sort.sort} name="sort" id="sort">
+            <option value="brand-asc">Sort by Brand asc</option>
+            <option value="brand-desc">Sort by Brand desc</option>
+            <option value="max_speed-asc">Sort by Max speed asc</option>
+            <option value="max_speed-desc">Sort by Max speed desc</option>
+          </select>
+        </div>
+      </div>
       <div>
         <CarSearch />
-        <input
-          min="1"
-          type="number"
-          onChange={(e) => handleChangePerPage(e.target.value)}
-        />
-
         <p>last:{pages.lastPage}</p>
         <p>current:{pages.currentPage}</p>
         {range.map((page) => (
@@ -92,13 +115,23 @@ function AppCars() {
           </span>
         ))}
       </div>
-      {cars
-        ? cars.map((car) => (
-            <ul key={car.id}>
-              <CarRow key={car.id} car={car} />
-            </ul>
-          ))
-        : 'Cars not found'}
+      {cars ? (
+        cars.length > 0 ? (
+          <ul className="list-group">
+            {cars.map((car) => (
+              <CarRow
+                key={car.id}
+                car={car}
+                selected={selectedCars.includes(car.id)}
+              />
+            ))}
+          </ul>
+        ) : (
+          'cars not found'
+        )
+      ) : (
+        'loading...'
+      )}
     </div>
   );
 }
