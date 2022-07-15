@@ -11,7 +11,10 @@ const store = configureStore({
     auth: authReducer,
     cars: carsReducer,
   },
-  middleware: (getDefaultMiddleware) => [...getDefaultMiddleware({ thunk: false }), sagaMiddleware],
+  middleware: (getDefaultMiddleware) => [
+    ...getDefaultMiddleware({ thunk: false }),
+    sagaMiddleware,
+  ],
 });
 
 for (const saga in sagas) {

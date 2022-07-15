@@ -6,9 +6,10 @@ class CarService extends HttpService {
     per_page = 3,
     brand = '',
     model = '',
-    sort = '',
+    sort = 'brand-asc',
   }) => {
     const { 0: sortBy, 1: sort_type } = sort.split('-');
+    console.log(sortBy);
     const { data } = await this.client.get(
       `cars?page=${page}&per_page=${per_page}&brand=${brand}&model=${model}&sort=${sortBy}&sort_type=${sort_type}`
     );

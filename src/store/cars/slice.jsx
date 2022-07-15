@@ -24,7 +24,7 @@ const carsSlice = createSlice({
       }
     },
     selectAll: (state) => {
-      state.cars.map(({ id }) => {
+      state.cars.map(({ id }) => { //stavi forEach a ne map, da ne manjam state on cars
         if (state.selectedCars.indexOf(id) === -1) {
           state.selectedCars.push(id);
         }
